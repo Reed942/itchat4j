@@ -84,6 +84,24 @@ public class WechatTools {
 	}
 
 	/**
+	 * 根据userName获取userINFO
+	 * 
+	 * @author https://github.com/yaphone
+	 * @date 2017年5月4日 下午11:37:20
+	 * @return
+	 */
+	public static JSONObject getUserInfoByUserName(String userName) {
+		JSONObject jo = null;
+		for (JSONObject o : core.getContactList()) {
+			if (userName.equals(o.getString("UserName"))) {
+				jo = o;
+				break;
+			}
+		}
+		return jo;
+	}
+	
+	/**
 	 * 返回群列表
 	 * 
 	 * @author https://github.com/yaphone
@@ -97,6 +115,7 @@ public class WechatTools {
 		}
 		return groupList;
 	}
+	
 
 	public static List<String> getGroupIdList() {
 		return core.getGroupIdList();

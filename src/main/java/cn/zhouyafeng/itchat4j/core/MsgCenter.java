@@ -100,12 +100,13 @@ public class MsgCenter {
 			} else if (m.getInteger("MsgType") == MsgCodeEnum.MSGTYPE_SYS.getCode()) {// 系统消息
 
 			} else if (m.getInteger("MsgType") == MsgCodeEnum.MSGTYPE_RECALLED.getCode()) { // 撤回消息
-
+				m.put("Type", MsgTypeEnum.RECALLED.getType());
 			} else {
 				LOG.info("Useless msg");
 			}
-			LOG.info("收到消息一条，来自: " + m.getString("FromUserName"));
+			LOG.info("收到消息一条，消息类型：" + m.getString("Type") + "(" + m.getInteger("MsgType") + ")，来自: " + m.getString("FromUserName") + "，内容：" + m.toJSONString());
 			result.add(m);
+			
 		}
 		return result;
 	}
@@ -138,6 +139,9 @@ public class MsgCenter {
 								MessageTools.sendMsgById(result, core.getMsgList().get(0).getString("FromUserName"));
 							} else if (msg.getString("Type").equals(MsgTypeEnum.NAMECARD.getType())) {
 								String result = msgHandler.nameCardMsgHandle(msg);
+								MessageTools.sendMsgById(result, core.getMsgList().get(0).getString("FromUserName"));
+							} else if (msg.getString("Type").equals(MsgTypeEnum.RECALLED.getType())) {
+								String result = msgHandler.recalledMsgHandle(msg);
 								MessageTools.sendMsgById(result, core.getMsgList().get(0).getString("FromUserName"));
 							}
 						} catch (Exception e) {

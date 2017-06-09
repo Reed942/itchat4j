@@ -13,7 +13,8 @@ public enum MsgTypeEnum {
 	PIC("Pic", "图片消息"),
 	VOICE("Voice", "语音消息"),
 	VIEDO("Viedo", "小视频消息"),
-	NAMECARD("NameCard", "名片消息");
+	NAMECARD("NameCard", "名片消息"),
+	RECALLED("Recalled","撤回消息");
 
 	private String type;
 	private String code;

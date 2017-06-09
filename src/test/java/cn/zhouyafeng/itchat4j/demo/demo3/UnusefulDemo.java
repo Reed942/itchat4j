@@ -68,4 +68,10 @@ public class UnusefulDemo implements IMsgHandlerFace {
 		wechat.start();
 	}
 
+	@Override
+	public String recalledMsgHandle(JSONObject msg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -94,6 +94,10 @@ public class MessageTools {
 	 * @param toUserName
 	 */
 	public static void webWxSendMsg(int msgType, String content, String toUserName) {
+		if (content == null || "".equals(content)) {
+			LOG.error("content_null", "content cann't be null");
+			return;
+		}
 		String url = String.format(URLEnum.WEB_WX_SEND_MSG.getUrl(), core.getLoginInfo().get("url"));
 		Map<String, Object> msgMap = new HashMap<String, Object>();
 		msgMap.put("Type", msgType);

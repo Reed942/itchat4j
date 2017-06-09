@@ -59,5 +59,15 @@ public interface IMsgHandlerFace {
 	 * @return
 	 */
 	public String nameCardMsgHandle(JSONObject msg);
+	
+	/**
+	 * 撤回消息
+	 * 
+	 * @author https://github.com/yaphone
+	 * @date 2017年5月1日 上午12:50:50
+	 * @param msg
+	 * @return
+	 */
+	public String recalledMsgHandle(JSONObject msg);
 
 }
