@@ -18,10 +18,12 @@ public class MsgModel {
 	private String remarkName;
 	private String text;
 	private String content;
+	private String fileUrl;
 	private String fromUserName;
 	private String toUserName;
 	private String status;
 	private String type;
+	private String originalMsg;
 	
 	public String getCreateTime() {
 		return createTime;
@@ -79,6 +81,13 @@ public class MsgModel {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	
+	public String getFileUrl() {
+		return fileUrl;
+	}
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
 	public String getFromUserName() {
 		return fromUserName;
 	}
@@ -103,14 +112,31 @@ public class MsgModel {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+	public String getOriginalMsg() {
+		return originalMsg;
+	}
+	public void setOriginalMsg(String originalMsg) {
+		this.originalMsg = originalMsg;
+	}
 	public List<MsgModel> selectWxMsg(Connection conn,String sql) throws Exception {
 		List<MsgModel> list=new ArrayList<MsgModel>();
 		PreparedStatement psmt=conn.prepareStatement(sql);
 		ResultSet rs=psmt.executeQuery();
 		while(rs.next()){
 			MsgModel msgModel = new MsgModel();
+			msgModel.setCreateTime(rs.getString("createTime"));
+			msgModel.setMsgType(rs.getInt("msgType"));
+			msgModel.setGroupMsg((rs.getString("groupMsg")));
+			msgModel.setNickName((rs.getString("nickName")));
+			msgModel.setRemarkName((rs.getString("remarkName")));
+			msgModel.setMsgId((rs.getString("msgId")));
+			msgModel.setNewMsgId((rs.getString("newMsgId")));
 			msgModel.setText(rs.getString("text"));
+			msgModel.setContent((rs.getString("content")));
+			msgModel.setFileUrl((rs.getString("fileUrl")));
+			msgModel.setFromUserName((rs.getString("fromUserName")));
+			msgModel.setToUserName((rs.getString("toUserName")));
+			msgModel.setType((rs.getString("type")));
 			
 			list.add(msgModel);
 		}
@@ -121,7 +147,7 @@ public class MsgModel {
 	}
 	
 	public void Insert(Connection conn) {
-		String sql="insert into wx_msg(createTime,msgType,groupMsg,nickName,remarkName,msgId,newMsgId,text,content,fromUserName,toUserName,status,type) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		String sql="insert into wx_msg(createTime,msgType,groupMsg,nickName,remarkName,msgId,newMsgId,text,content,fileUrl,fromUserName,toUserName,status,type,originalMsg) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		
 		PreparedStatement psmt = null;
 		try{
@@ -135,10 +161,12 @@ public class MsgModel {
 			psmt.setString(7, this.getNewMsgId());
 			psmt.setString(8, this.getText());
 			psmt.setString(9, this.getContent());
-			psmt.setString(10, this.getFromUserName());
-			psmt.setString(11, this.getToUserName());
-			psmt.setString(12, this.getStatus());
-			psmt.setString(13, this.getType());
+			psmt.setString(10, this.getFileUrl());
+			psmt.setString(11, this.getFromUserName());
+			psmt.setString(12, this.getToUserName());
+			psmt.setString(13, this.getStatus());
+			psmt.setString(14, this.getType());
+			psmt.setString(15, this.getOriginalMsg());
 			psmt.executeUpdate();
 			psmt.close();
 			

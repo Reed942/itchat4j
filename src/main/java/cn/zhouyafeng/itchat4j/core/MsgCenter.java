@@ -142,7 +142,7 @@ public class MsgCenter {
 								MessageTools.sendMsgById(result, core.getMsgList().get(0).getString("FromUserName"));
 							} else if (msg.getString("Type").equals(MsgTypeEnum.RECALLED.getType())) {
 								String result = msgHandler.recalledMsgHandle(msg);
-								MessageTools.sendMsgById(result, core.getMsgList().get(0).getString("FromUserName"));
+								
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
