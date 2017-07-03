@@ -186,4 +186,43 @@ public class WechatTools {
 		}
 	}
 
+	/**
+	 * 联系人头像地址
+	 * @param userName
+	 * @return
+	 */
+	public static String getIconUrl(String userName) {
+		String url = String.format(URLEnum.WEB_WX_BATCH_GET_CONTACT.getUrl(), 
+				core.getLoginInfo().get("url"), 
+				String.valueOf(System.currentTimeMillis() / 3158L),
+				core.getLoginInfo().get(StorageLoginInfoEnum.pass_ticket.getKey()));
+		url = url + "?username=" + userName + "&skey=" + (String) core.getLoginInfo().get("skey");
+		System.out.println("icon_url============" + url);
+		return url;
+	}
+	
+	/**
+	 * 联系人头像数据
+	 * @param userName
+	 */
+	public static void getIconData(String userName) {
+		Map<String, String> headerMap = new HashMap<String, String>();
+		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+		String url = String.format(URLEnum.WEB_WX_BATCH_GET_CONTACT.getUrl(), 
+				core.getLoginInfo().get("url"), 
+				String.valueOf(System.currentTimeMillis() / 3158L),
+				core.getLoginInfo().get(StorageLoginInfoEnum.pass_ticket.getKey()));
+		params.add(new BasicNameValuePair("username", userName));
+		params.add(new BasicNameValuePair("skey", (String) core.getLoginInfo().get("skey")));
+		HttpEntity entity = core.getMyHttpClient().doGet(url, params, true, headerMap);
+	}
+	
+	public static void getGroupInfo() {
+		String url = String.format(URLEnum.WEB_WX_BATCH_GET_CONTACT.getUrl(), 
+				core.getLoginInfo().get("url"), 
+				String.valueOf(System.currentTimeMillis() / 3158L),
+				core.getLoginInfo().get(StorageLoginInfoEnum.pass_ticket.getKey()));
+		
+	}
+	
 }

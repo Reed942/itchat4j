@@ -133,7 +133,7 @@ public class LoginServiceImpl implements ILoginService {
 		String qrUrl = URLEnum.QRCODE_URL.getUrl() + core.getUuid();
 		HttpEntity entity = myHttpClient.doGet(qrUrl, null, true, null);
 		try {
-			OutputStream out = new FileOutputStream(qrPath);
+			OutputStream out = new FileOutputStream(new File(qrPath));
 			byte[] bytes = EntityUtils.toByteArray(entity);
 			out.write(bytes);
 			out.flush();
@@ -337,7 +337,7 @@ public class LoginServiceImpl implements ILoginService {
 			core.setMemberCount(member.size());
 			for (Iterator<?> iterator = member.iterator(); iterator.hasNext();) {
 				JSONObject o = (JSONObject) iterator.next();
-
+				core.getAutoReply().put(o.getString("UserName"), false);//设置是否自动回复
 				if ((o.getInteger("VerifyFlag") & 8) != 0) { // 公众号/服务号
 					core.getPublicUsersList().add(o);
 				} else if (Config.API_SPECIAL_USER.contains(o.getString("UserName"))) { // 特殊账号
@@ -345,7 +345,7 @@ public class LoginServiceImpl implements ILoginService {
 				} else if (o.getString("UserName").indexOf("@@") != -1) { // 群聊
 					core.getGroupList().add(o);
 				} else if (o.getString("UserName").equals(core.getUserSelf().getString("UserName"))) { // 自己
-					core.getContactList().remove(o);
+					//core.getContactList().remove(o);
 				} else { // 普通联系人
 					core.getContactList().add(o);
 				}
@@ -584,6 +584,41 @@ public class LoginServiceImpl implements ILoginService {
 			e.printStackTrace();
 		}
 		return resultMap;
+	}
+
+	@Override
+	public boolean loginOneTime() {
+		boolean isLogin = false;
+		// 组装参数和URL
+		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+		params.add(new BasicNameValuePair(LoginParaEnum.LOGIN_ICON.para(), LoginParaEnum.LOGIN_ICON.value()));
+		params.add(new BasicNameValuePair(LoginParaEnum.UUID.para(), core.getUuid()));
+		params.add(new BasicNameValuePair(LoginParaEnum.TIP.para(), LoginParaEnum.TIP.value()));
+
+		// SleepUtils.sleep(time += 1000);
+		long millis = System.currentTimeMillis();
+		params.add(new BasicNameValuePair(LoginParaEnum.R.para(), String.valueOf(millis / 1579L)));
+		params.add(new BasicNameValuePair(LoginParaEnum._.para(), String.valueOf(millis)));
+		HttpEntity entity = httpClient.doGet(URLEnum.LOGIN_URL.getUrl(), params, true, null);
+
+		try {
+			String result = EntityUtils.toString(entity);
+			String status = checklogin(result);
+
+			if (ResultEnum.SUCCESS.getCode().equals(status)) {
+				processLoginInfo(result); // 处理结果
+				isLogin = true;
+				core.setAlive(isLogin);
+				
+			}
+			if (ResultEnum.WAIT_CONFIRM.getCode().equals(status)) {
+				LOG.info("请点击微信确认按钮，进行登陆");
+			}
+
+		} catch (Exception e) {
+			LOG.error("微信登陆异常！", e);
+		}
+		return isLogin;
 	}
 
 }

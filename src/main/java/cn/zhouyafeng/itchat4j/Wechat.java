@@ -12,16 +12,31 @@ public class Wechat {
 	private static final Logger LOG = LoggerFactory.getLogger(Wechat.class);
 	private IMsgHandlerFace msgHandler;
 	private Core core = Core.getInstance();
-
-	public Wechat(IMsgHandlerFace msgHandler, String qrPath) {
+	// 登陆
+	LoginController login = new LoginController();
+	
+	public Wechat(IMsgHandlerFace msgHandler) {
 		System.setProperty("jsse.enableSNIExtension", "false"); // 防止SSL错误
 		this.msgHandler = msgHandler;
 
-		// 登陆
-		LoginController login = new LoginController();
+	}
+	
+	public void login(String qrPath) {
 		login.login(qrPath);
 	}
+	
+	public void createQR(String qrPath) {
+		login.createQR(qrPath);
+	}
 
+	public boolean weLogin() {
+		return login.weLogin();
+	}
+	
+	public boolean weLoginOneTime() {
+		return login.weLoginOneTime();
+	}
+	
 	public void start() {
 		LOG.info("+++++++++++++++++++开始消息处理+++++++++++++++++++++");
 		new Thread(new Runnable() {

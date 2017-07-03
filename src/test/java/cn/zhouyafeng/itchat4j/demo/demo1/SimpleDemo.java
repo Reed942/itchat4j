@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
@@ -44,9 +45,14 @@ public class SimpleDemo implements IMsgHandlerFace {
 	static Connection conn;
 	
 	public static void main(String[] args) {
+		weStart();
+	}
+	
+	public static String weStart() {
 		String qrPath = "E://itchat4j//login"; // 保存登陆二维码图片的路径
 		IMsgHandlerFace msgHandler = new SimpleDemo(); // 实现IMsgHandlerFace接口的类
-		Wechat wechat = new Wechat(msgHandler, qrPath); // 【注入】
+		Wechat wechat = new Wechat(msgHandler); // 【注入】
+		wechat.login(qrPath);
 		wechat.start(); // 启动服务，会在qrPath下生成一张二维码图片，扫描即可登陆，注意，二维码图片如果超过一定时间未扫描会过期，过期时会自动更新，所以你可能需要重新打开图片
 		try {
 			conn = DbUtil.getConn();
@@ -54,6 +60,7 @@ public class SimpleDemo implements IMsgHandlerFace {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return qrPath;
 	}
 	
 	private void insertMsg(Connection conn, JSONObject m) {
@@ -110,7 +117,7 @@ public class SimpleDemo implements IMsgHandlerFace {
 				}
 				if (text.contains("@郑明青－技术部")) {
 					MessageTools.sendMsgByNickName("群消息提醒：\""+text.replaceAll("@郑明青－技术部", "")+"\"", "cosmo");
-					MessageTools.sendMsgById("已帮您微信通知@郑明青", msg.getString("FromUserName"));
+					MessageTools.sendMsgById("别急，已微信通知@郑明青", msg.getString("FromUserName"));
 				}
 				if (text.contains("@所有人")) {
 					sourceText = text.replaceAll("@所有人", "");
@@ -121,8 +128,14 @@ public class SimpleDemo implements IMsgHandlerFace {
 			}
 			
 		}
+		sourceText = sourceText.trim();
 		if (!"".equals(sourceText)) {
 			result = getByTuling(sourceText);
+		} else {
+			if (text.contains("@范羊") || text.contains("@范羊-技术好")) {
+				result = "要跟我说话就说完话马上@我！！！";
+			} 
+			
 		}
 		
 		return result;
@@ -148,7 +161,7 @@ public class SimpleDemo implements IMsgHandlerFace {
 			if (obj.getString("code").equals("100000")) {
 				result = obj.getString("text");
 			} else {
-				result = "消息处理有误";
+				result = "你说的我不太懂！！！";
 			}
 		} catch (Exception e) {
 			LOG.info(e.getMessage());
@@ -231,9 +244,9 @@ public class SimpleDemo implements IMsgHandlerFace {
 				} else if (msgM.getType().equals(MsgTypeEnum.PIC.getType())) {
 					MessageTools.sendPicMsgByUserId(msg.getString("FromUserName"), msgM.getFileUrl());
 				} else if (msgM.getType().equals(MsgTypeEnum.VOICE.getType())) {
-					MessageTools.sendPicMsgByUserId(msg.getString("FromUserName"), msgM.getFileUrl());
+					MessageTools.sendFileMsgByUserId(msg.getString("FromUserName"), msgM.getFileUrl());
 				} else if (msgM.getType().equals(MsgTypeEnum.VIEDO.getType())) {
-					MessageTools.sendPicMsgByUserId(msg.getString("FromUserName"), msgM.getFileUrl());
+					MessageTools.sendFileMsgByUserId(msg.getString("FromUserName"), msgM.getFileUrl());
 				}
 				
 			}

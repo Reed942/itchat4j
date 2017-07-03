@@ -18,6 +18,15 @@ public interface ILoginService {
 	 * @return
 	 */
 	boolean login();
+	
+	/**
+	 * 登陆 单次检测
+	 * 
+	 * @author https://github.com/yaphone
+	 * @date 2017年5月13日 上午12:14:07
+	 * @return
+	 */
+	boolean loginOneTime();
 
 	/**
 	 * 获取UUID

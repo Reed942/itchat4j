@@ -51,6 +51,8 @@ public class Core {
 	private List<JSONObject> specialUsersList = new ArrayList<JSONObject>();;// 特殊账号
 	private List<String> groupIdList = new ArrayList<String>();
 	private Map<String, JSONObject> userInfoMap = new HashMap<String, JSONObject>();
+	
+	private Map<String, Boolean> autoReply = new HashMap<String, Boolean>();
 
 	Map<String, Object> loginInfo = new HashMap<String, Object>();
 	// CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -239,6 +241,14 @@ public class Core {
 
 	public void setUserInfoMap(Map<String, JSONObject> userInfoMap) {
 		this.userInfoMap = userInfoMap;
+	}
+
+	public Map<String, Boolean> getAutoReply() {
+		return autoReply;
+	}
+
+	public void setAutoReply(Map<String, Boolean> autoReply) {
+		this.autoReply = autoReply;
 	}
 
 }
